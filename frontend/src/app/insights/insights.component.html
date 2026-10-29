@@ -1,0 +1,115 @@
+<header class="page-header">
+  <h1>Pay insights</h1>
+  <p class="subtitle">
+    How ACME pays {{ totalHeadcount() | number }} people across {{ countries().length }} countries.
+    Amounts are annual gross salaries in each country's own currency.
+  </p>
+</header>
+
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" aria-label="Loading insights" />
+}
+@if (error(); as message) {
+  <p class="error" role="alert">{{ message }}</p>
+}
+
+<section class="card">
+  <h2><mat-icon aria-hidden="true">public</mat-icon> Pay by country</h2>
+  <p class="hint">Select a country to see pay by job title and how salaries are spread.</p>
+
+  <table mat-table [dataSource]="countries()" class="clickable">
+    <ng-container matColumnDef="countryName">
+      <th mat-header-cell *matHeaderCellDef>Country</th>
+      <td mat-cell *matCellDef="let c">{{ c.countryName }} <span class="muted">({{ c.currency }})</span></td>
+    </ng-container>
+    <ng-container matColumnDef="headcount">
+      <th mat-header-cell *matHeaderCellDef class="num">Employees</th>
+      <td mat-cell *matCellDef="let c" class="num">{{ c.headcount | number }}</td>
+    </ng-container>
+    <ng-container matColumnDef="minSalary">
+      <th mat-header-cell *matHeaderCellDef class="num">Lowest</th>
+      <td mat-cell *matCellDef="let c" class="num">{{ c.minSalary | currency: c.currency : 'symbol-narrow' : '1.0-0' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="averageSalary">
+      <th mat-header-cell *matHeaderCellDef class="num">Average</th>
+      <td mat-cell *matCellDef="let c" class="num strong">{{ c.averageSalary | currency: c.currency : 'symbol-narrow' : '1.0-0' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="maxSalary">
+      <th mat-header-cell *matHeaderCellDef class="num">Highest</th>
+      <td mat-cell *matCellDef="let c" class="num">{{ c.maxSalary | currency: c.currency : 'symbol-narrow' : '1.0-0' }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="countryColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: countryColumns" (click)="select(row.country)"
+        (keydown.enter)="select(row.country)" tabindex="0" [class.selected]="row.country === selected()"
+        [attr.aria-selected]="row.country === selected()"></tr>
+  </table>
+</section>
+
+@if (selectedStats(); as country) {
+  <div class="country-header">
+    <h2>{{ country.countryName }}</h2>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Country</mat-label>
+      <mat-select [value]="selected()" (selectionChange)="select($event.value)">
+        @for (c of countries(); track c.country) {
+          <mat-option [value]="c.country">{{ c.countryName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2><mat-icon aria-hidden="true">work</mat-icon> Pay by job title</h2>
+      <p class="hint">Highest average pay first.</p>
+      <table mat-table [dataSource]="jobTitles()">
+        <ng-container matColumnDef="jobTitle">
+          <th mat-header-cell *matHeaderCellDef>Job title</th>
+          <td mat-cell *matCellDef="let t">{{ t.jobTitle }}</td>
+        </ng-container>
+        <ng-container matColumnDef="headcount">
+          <th mat-header-cell *matHeaderCellDef class="num">People</th>
+          <td mat-cell *matCellDef="let t" class="num">{{ t.headcount | number }}</td>
+        </ng-container>
+        <ng-container matColumnDef="minSalary">
+          <th mat-header-cell *matHeaderCellDef class="num">Lowest</th>
+          <td mat-cell *matCellDef="let t" class="num">{{ t.minSalary | currency: currency() : 'symbol-narrow' : '1.0-0' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="averageSalary">
+          <th mat-header-cell *matHeaderCellDef class="num">Average</th>
+          <td mat-cell *matCellDef="let t" class="num strong">{{ t.averageSalary | currency: currency() : 'symbol-narrow' : '1.0-0' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="maxSalary">
+          <th mat-header-cell *matHeaderCellDef class="num">Highest</th>
+          <td mat-cell *matCellDef="let t" class="num">{{ t.maxSalary | currency: currency() : 'symbol-narrow' : '1.0-0' }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="titleColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: titleColumns"></tr>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2><mat-icon aria-hidden="true">bar_chart</mat-icon> How pay is spread</h2>
+      <p class="hint">Employees per salary band, between the lowest and highest salary in {{ country.countryName }}.</p>
+      @if (distribution(); as d) {
+        <ul class="bands" aria-label="Salary distribution">
+          @for (band of d.bands; track band.from) {
+            <li class="band">
+              <span class="band-head">
+                <span class="band-label">
+                  {{ band.from | currency: d.currency : 'symbol-narrow' : '1.0-0' }} –
+                  {{ band.to | currency: d.currency : 'symbol-narrow' : '1.0-0' }}
+                </span>
+                <span class="band-count">{{ band.headcount | number }} people</span>
+              </span>
+              <span class="bar-track" aria-hidden="true">
+                <span class="bar" [style.width.%]="barWidth(band.headcount)"></span>
+              </span>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+}
