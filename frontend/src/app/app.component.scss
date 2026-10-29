@@ -1,0 +1,28 @@
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: 8px;
+}
+
+.brand {
+  font-weight: 500;
+}
+
+.spacer {
+  flex: 1;
+}
+
+nav a {
+  color: inherit;
+}
+
+nav a.active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
