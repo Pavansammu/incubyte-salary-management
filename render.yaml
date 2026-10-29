@@ -1,0 +1,15 @@
+# Render blueprint: one Docker web service (UI + API on the same URL).
+services:
+  - type: web
+    name: acme-salary-management
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    envVars:
+      # Free plan has no persistent disk: the DB lives in the container and is
+      # re-seeded with the same 10,000 employees whenever the service restarts.
+      - key: DB_PATH
+        value: /data/salary.db
+      - key: JAVA_OPTS
+        value: -XX:MaxRAMPercentage=75 -XX:+UseSerialGC

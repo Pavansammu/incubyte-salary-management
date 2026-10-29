@@ -21,6 +21,14 @@ spring:
 
 server:
   port: ${PORT:8080}
+  compression:
+    enabled: true   # smaller JS/JSON over the wire
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health   # expose only what the hosting platform needs
 
 app:
   seed:
