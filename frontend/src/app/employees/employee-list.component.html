@@ -1,0 +1,129 @@
+<header class="page-header">
+  <div>
+    <h1>Employees</h1>
+    @if (page(); as p) {
+      <p class="subtitle">{{ p.totalElements | number }} employees match your filters</p>
+    }
+  </div>
+  <a mat-flat-button color="primary" routerLink="/employees/new">
+    <mat-icon>person_add</mat-icon> Add employee
+  </a>
+</header>
+
+<form class="filters" [formGroup]="filters" aria-label="Filter employees">
+  <mat-form-field appearance="outline" class="search">
+    <mat-label>Search by name</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput formControlName="search" placeholder="e.g. Sharma" autocomplete="off" />
+  </mat-form-field>
+
+  @if (meta$ | async; as meta) {
+    <mat-form-field appearance="outline">
+      <mat-label>Country</mat-label>
+      <mat-select formControlName="country">
+        <mat-option value="">All countries</mat-option>
+        @for (c of meta.countries; track c.code) {
+          <mat-option [value]="c.code">{{ c.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Job title</mat-label>
+      <mat-select formControlName="jobTitle">
+        <mat-option value="">All job titles</mat-option>
+        @for (t of meta.jobTitles; track t) {
+          <mat-option [value]="t">{{ t }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Department</mat-label>
+      <mat-select formControlName="department">
+        <mat-option value="">All departments</mat-option>
+        @for (d of meta.departments; track d) {
+          <mat-option [value]="d">{{ d }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+
+  <button mat-button type="button" (click)="clearFilters()">
+    <mat-icon>filter_alt_off</mat-icon> Clear
+  </button>
+</form>
+
+<section class="table-card">
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" aria-label="Loading employees" />
+  }
+
+  @if (error(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  }
+
+  <table mat-table [dataSource]="page()?.content ?? []" matSort matSortActive="fullName" matSortDirection="asc"
+         (matSortChange)="onSort($event)">
+    <ng-container matColumnDef="fullName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+      <td mat-cell *matCellDef="let e">{{ e.fullName }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="jobTitle">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Job title</th>
+      <td mat-cell *matCellDef="let e">{{ e.jobTitle }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="department">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Department</th>
+      <td mat-cell *matCellDef="let e">{{ e.department }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="country">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Country</th>
+      <td mat-cell *matCellDef="let e">{{ e.country }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="salary">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header arrowPosition="before" class="num">Annual salary</th>
+      <td mat-cell *matCellDef="let e" class="num">{{ e.salary | currency: e.currency : 'symbol-narrow' : '1.0-0' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="employmentType">
+      <th mat-header-cell *matHeaderCellDef>Type</th>
+      <td mat-cell *matCellDef="let e">{{ typeLabel(e) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="hireDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Hired</th>
+      <td mat-cell *matCellDef="let e">{{ e.hireDate | date: 'mediumDate' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef><span class="sr-only">Actions</span></th>
+      <td mat-cell *matCellDef="let e" class="actions">
+        <a mat-icon-button [routerLink]="['/employees', e.id, 'edit']" matTooltip="Edit"
+           [attr.aria-label]="'Edit ' + e.fullName">
+          <mat-icon>edit</mat-icon>
+        </a>
+        <button mat-icon-button type="button" (click)="confirmDelete(e)" matTooltip="Delete"
+                [attr.aria-label]="'Delete ' + e.fullName">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell empty" [attr.colspan]="columns.length">
+        @if (!loading()) { No employees match these filters. }
+      </td>
+    </tr>
+  </table>
+
+  <mat-paginator [length]="page()?.totalElements ?? 0" [pageIndex]="page()?.page ?? 0"
+                 [pageSize]="page()?.size ?? 20" [pageSizeOptions]="[10, 20, 50, 100]"
+                 (page)="onPage($event)" aria-label="Select page of employees" showFirstLastButtons />
+</section>
