@@ -48,7 +48,7 @@ describe('EmployeeListComponent', () => {
     expect(text).toContain('Asha Rao');
     expect(text).toContain('₹'); // symbol comes from the employee's own currency
     expect(text).toContain('Full-time');
-    expect(text).toContain('1 employees match your filters');
+    expect(text).toContain('1 employee matches your filters');
   });
 
   it('waits until the HR Manager stops typing, then searches from the first page', fakeAsync(() => {

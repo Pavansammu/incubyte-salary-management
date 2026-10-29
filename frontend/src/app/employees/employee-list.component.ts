@@ -107,7 +107,7 @@ export class EmployeeListComponent implements OnInit {
   confirmDelete(employee: Employee): void {
     const data: ConfirmDialogData = {
       title: 'Delete employee?',
-      message: `${employee.fullName} (${employee.jobTitle}, ${employee.country}) will be permanently removed.`,
+      message: `${employee.fullName} (${employee.jobTitle}, ${employee.countryName}) will be permanently removed.`,
       confirmLabel: 'Delete',
     };
     this.dialog.open(ConfirmDialogComponent, { data }).afterClosed().subscribe(confirmed => {

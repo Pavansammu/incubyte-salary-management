@@ -1,0 +1,93 @@
+<a mat-button routerLink="/employees" class="back"><mat-icon>arrow_back</mat-icon> Back to employees</a>
+
+<section class="card">
+  <h1>{{ isEdit() ? 'Edit employee' : 'Add employee' }}</h1>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" aria-label="Loading employee" />
+  }
+
+  @if (formError(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <mat-form-field appearance="outline" class="full" subscriptSizing="dynamic">
+      <mat-label>Full name</mat-label>
+      <input matInput formControlName="fullName" autocomplete="off" />
+      @if (form.controls.fullName.hasError('required')) { <mat-error>Full name is required</mat-error> }
+      @if (form.controls.fullName.hasError('minlength')) { <mat-error>Use at least 2 characters</mat-error> }
+      @if (form.controls.fullName.hasError('server')) { <mat-error>{{ form.controls.fullName.getError('server') }}</mat-error> }
+    </mat-form-field>
+
+    @if (meta$ | async; as meta) {
+      <div class="row">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Job title</mat-label>
+          <input matInput formControlName="jobTitle" [matAutocomplete]="titles" autocomplete="off" />
+          <mat-autocomplete #titles="matAutocomplete">
+            @for (t of meta.jobTitles; track t) { <mat-option [value]="t">{{ t }}</mat-option> }
+          </mat-autocomplete>
+          <mat-hint>Pick an existing title or type a new one</mat-hint>
+          @if (form.controls.jobTitle.hasError('required')) { <mat-error>Job title is required</mat-error> }
+          @if (form.controls.jobTitle.hasError('server')) { <mat-error>{{ form.controls.jobTitle.getError('server') }}</mat-error> }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Department</mat-label>
+          <input matInput formControlName="department" [matAutocomplete]="departments" autocomplete="off" />
+          <mat-autocomplete #departments="matAutocomplete">
+            @for (d of meta.departments; track d) { <mat-option [value]="d">{{ d }}</mat-option> }
+          </mat-autocomplete>
+          @if (form.controls.department.hasError('required')) { <mat-error>Department is required</mat-error> }
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Country</mat-label>
+          <mat-select formControlName="country">
+            @for (c of meta.countries; track c.code) {
+              <mat-option [value]="c.code">{{ c.name }} ({{ c.currency }})</mat-option>
+            }
+          </mat-select>
+          @if (form.controls.country.hasError('required')) { <mat-error>Country is required</mat-error> }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Annual salary</mat-label>
+          <input matInput type="number" formControlName="salary" min="0" step="100" />
+          <span matTextSuffix>{{ currency() }}</span>
+          <mat-hint>Gross per year, in the country's currency</mat-hint>
+          @if (form.controls.salary.hasError('required')) { <mat-error>Salary is required</mat-error> }
+          @if (form.controls.salary.hasError('min')) { <mat-error>Salary must be greater than 0</mat-error> }
+          @if (form.controls.salary.hasError('max')) { <mat-error>Salary is too large</mat-error> }
+          @if (form.controls.salary.hasError('server')) { <mat-error>{{ form.controls.salary.getError('server') }}</mat-error> }
+        </mat-form-field>
+      </div>
+    }
+
+    <div class="row">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Employment type</mat-label>
+        <mat-select formControlName="employmentType">
+          @for (t of employmentTypes; track t[0]) { <mat-option [value]="t[0]">{{ t[1] }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Hire date</mat-label>
+        <input matInput type="date" formControlName="hireDate" [max]="maxHireDate" />
+        @if (form.controls.hireDate.hasError('required')) { <mat-error>Hire date is required</mat-error> }
+        @if (form.controls.hireDate.hasError('server')) { <mat-error>{{ form.controls.hireDate.getError('server') }}</mat-error> }
+      </mat-form-field>
+    </div>
+
+    <div class="actions">
+      <a mat-button routerLink="/employees">Cancel</a>
+      <button mat-flat-button color="primary" type="submit" [disabled]="saving() || loading()">
+        {{ saving() ? 'Saving…' : (isEdit() ? 'Save changes' : 'Add employee') }}
+      </button>
+    </div>
+  </form>
+</section>

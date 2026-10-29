@@ -2,7 +2,7 @@
   <div>
     <h1>Employees</h1>
     @if (page(); as p) {
-      <p class="subtitle">{{ p.totalElements | number }} employees match your filters</p>
+      <p class="subtitle">{{ p.totalElements | number }} {{ p.totalElements === 1 ? 'employee matches' : 'employees match' }} your filters</p>
     }
   </div>
   <a mat-flat-button color="primary" routerLink="/employees/new">
