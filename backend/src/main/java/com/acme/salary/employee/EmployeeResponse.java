@@ -10,6 +10,7 @@ public record EmployeeResponse(
         String jobTitle,
         String department,
         Country country,
+        String countryName,
         String currency,
         BigDecimal salary,
         EmploymentType employmentType,
@@ -17,6 +18,7 @@ public record EmployeeResponse(
 
     static EmployeeResponse from(Employee e) {
         return new EmployeeResponse(e.getId(), e.getFullName(), e.getJobTitle(), e.getDepartment(),
-                e.getCountry(), e.getCurrency(), e.getSalary(), e.getEmploymentType(), e.getHireDate());
+                e.getCountry(), e.getCountry().displayName(), e.getCurrency(), e.getSalary(),
+                e.getEmploymentType(), e.getHireDate());
     }
 }

@@ -50,6 +50,7 @@ class EmployeeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].fullName").value("Asha Rao"))
                 .andExpect(jsonPath("$.content[0].currency").value("INR"))
+                .andExpect(jsonPath("$.content[0].countryName").value("India"))
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.page").value(0))
                 .andExpect(jsonPath("$.size").value(20));
@@ -155,7 +156,7 @@ class EmployeeControllerTest {
     }
 
     private static EmployeeResponse asha() {
-        return new EmployeeResponse(1L, "Asha Rao", "Software Engineer", "Engineering", Country.INDIA, "INR",
+        return new EmployeeResponse(1L, "Asha Rao", "Software Engineer", "Engineering", Country.INDIA, "India", "INR",
                 new BigDecimal("1800000.00"), EmploymentType.FULL_TIME, LocalDate.of(2022, 3, 1));
     }
 }

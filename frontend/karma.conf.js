@@ -32,7 +32,8 @@ module.exports = function (config) {
       ]
     },
     reporters: ['progress', 'kjhtml'],
-    browsers: ['ChromeHeadlessCI'],
+    // KARMA_MANUAL=1: start no browser; point any browser at http://localhost:9876 instead
+    browsers: process.env.KARMA_MANUAL ? [] : ['ChromeHeadlessCI'],
     customLaunchers: {
       // works with Chrome or Edge (set CHROME_BIN to the Edge exe on machines without Chrome)
       ChromeHeadlessCI: { base: 'ChromeHeadless', flags: ['--no-sandbox', '--disable-gpu'] }

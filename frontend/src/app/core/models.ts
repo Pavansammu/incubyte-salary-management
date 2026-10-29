@@ -12,14 +12,15 @@ export interface Employee {
   jobTitle: string;
   department: string;
   country: CountryCode;
+  countryName: string;
   currency: string;
   salary: number;
   employmentType: EmploymentType;
   hireDate: string; // yyyy-MM-dd
 }
 
-/** What the HR Manager submits; currency is derived from country on the server. */
-export type EmployeeRequest = Omit<Employee, 'id' | 'currency'>;
+/** What the HR Manager submits; currency (and display name) are derived from country on the server. */
+export type EmployeeRequest = Omit<Employee, 'id' | 'currency' | 'countryName'>;
 
 export interface Page<T> {
   content: T[];

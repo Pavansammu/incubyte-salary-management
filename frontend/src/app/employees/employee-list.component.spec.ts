@@ -9,7 +9,7 @@ import { MetaService } from '../core/insights.service';
 import { Employee, Page } from '../core/models';
 
 const ASHA: Employee = {
-  id: 1, fullName: 'Asha Rao', jobTitle: 'Software Engineer', department: 'Engineering', country: 'INDIA',
+  id: 1, fullName: 'Asha Rao', jobTitle: 'Software Engineer', department: 'Engineering', country: 'INDIA', countryName: 'India',
   currency: 'INR', salary: 1800000, employmentType: 'FULL_TIME', hireDate: '2022-03-01',
 };
 
@@ -46,7 +46,7 @@ describe('EmployeeListComponent', () => {
 
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     expect(text).toContain('Asha Rao');
-    expect(text).toContain('₹18,00,000'.slice(0, 1)); // rupee symbol rendered from the employee's currency
+    expect(text).toContain('₹'); // symbol comes from the employee's own currency
     expect(text).toContain('Full-time');
     expect(text).toContain('1 employees match your filters');
   });

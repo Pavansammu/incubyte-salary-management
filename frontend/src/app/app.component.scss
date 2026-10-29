@@ -26,3 +26,9 @@ nav a.active {
   margin: 0 auto;
   padding: 24px 16px 48px;
 }
+
+// Material 3 toolbars ignore color="primary"; give the app a clear branded header
+.toolbar {
+  background: #0b3d91;
+  color: #fff;
+}
