@@ -5,3 +5,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+
+app:
+  seed:
+    # tests build their own small, hand-checkable datasets
+    enabled: false

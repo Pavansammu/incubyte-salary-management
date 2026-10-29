@@ -111,3 +111,12 @@ are easy to check by eye. TDD for the service and insight logic.
 - **No auth** in v1. Next: SSO + an HR role, then an audit log of salary changes.
 - **Per-country currency only.** Next: optional conversion to a reporting currency with dated FX rates.
 - **Hard delete.** Next: soft delete / archive for leavers, to keep history.
+
+## 9. Measured results (local, 10,000 seeded employees)
+| Check | Result |
+|-------|--------|
+| Seeding 10,000 rows | **0.59 s** (first attempt took 35.7 s: the transaction was skipped because `run()` called `seedIfEmpty()` on the same object, bypassing Spring's proxy, so every row auto-committed; fixed by making `run()` itself transactional) |
+| `GET /api/employees?search=sharma&country=INDIA` | ~80 ms |
+| `GET /api/insights/countries` | ~30 ms |
+| `GET /api/insights/countries/INDIA/job-titles` | ~37 ms |
+| `GET /api/insights/countries/INDIA/distribution` | ~19 ms |
