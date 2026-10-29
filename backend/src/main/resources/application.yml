@@ -13,6 +13,11 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
+  data:
+    web:
+      pageable:
+        # protect the API from "give me all 10,000 rows" requests
+        max-page-size: 100
 
 server:
   port: ${PORT:8080}
