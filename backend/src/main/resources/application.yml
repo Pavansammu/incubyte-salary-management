@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: salary-management
+  datasource:
+    # Single-file relational DB; path overridable for deployment (e.g. a mounted disk)
+    url: jdbc:sqlite:${DB_PATH:./data/salary.db}
+    driver-class-name: org.sqlite.JDBC
+    hikari:
+      # SQLite allows one writer at a time; a single connection avoids "database is locked"
+      maximum-pool-size: 1
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+server:
+  port: ${PORT:8080}
