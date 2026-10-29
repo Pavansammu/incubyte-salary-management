@@ -3,7 +3,7 @@
 A web application that replaces ACME's Excel-based salary tracking. It lets the **HR Manager** maintain salary
 data for **10,000 employees across 8 countries** and answer **"how does the organisation pay people?"**.
 
-**Live demo:** https://acme-salary-management-erh3.onrender.com (free tier: the first request after idle takes ~1 minute to wake up) · **Video walkthrough:** _<add link>_
+**Live demo:** https://acme-salary-management-erh3.onrender.com (free tier: the first request after idle takes ~1 minute to wake up)
 
 | Employees | Pay insights |
 |-----------|--------------|
