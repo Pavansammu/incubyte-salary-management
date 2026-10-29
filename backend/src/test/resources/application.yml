@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    # In-memory SQLite: fast, isolated, same SQL dialect as production
+    url: jdbc:sqlite:file:testdb?mode=memory&cache=shared
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
