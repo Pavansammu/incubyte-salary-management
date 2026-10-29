@@ -1,5 +1,7 @@
 package com.acme.salary.employee;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +13,12 @@ public class EmployeeService {
 
     public EmployeeService(EmployeeRepository repository) {
         this.repository = repository;
+    }
+
+    /** Server-side filtering and paging: the UI never loads all 10,000 rows. */
+    public Page<EmployeeResponse> search(EmployeeSearchCriteria criteria, Pageable pageable) {
+        return repository.findAll(EmployeeSpecifications.matching(criteria), pageable)
+                .map(EmployeeResponse::from);
     }
 
     public EmployeeResponse get(Long id) {
